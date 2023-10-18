@@ -33,7 +33,7 @@ namespace GravitySimulation
 
         public double Time;
 
-        public double distanceTick;
+        public double TimeStep;
 
 
         public List<string> _log { get; set; }
@@ -67,41 +67,50 @@ namespace GravitySimulation
         public Simulation(ObservableCollection<Body> bodies)
         {
             this.Bodies = bodies;
-            GravitationalConstant = 1;
-            Softening = 0.1;
-            distanceTick = 1;
+            GravitationalConstant = 6.67e-11;
+            Softening = 10;
+            TimeStep = 10.0;
             Time = 0;
             Log = new List<string>();
        }
+        public Simulation()
+        {
+            this.Bodies = new ObservableCollection<Body>();
+            GravitationalConstant = 6.67e-11;
+            Softening = 10;
+            TimeStep = 10.0;
+            Time = 0;
+            Log = new List<string>();
+        }
+
 
         public void RunSimulation()
         {
-            for(int i = 0; i < 10000; i++) 
+            for(int i = 0; i < 1000000; i++) 
             {
+
+
                 for(int j = 0; j < Bodies.Count; j++)
                 {
-                    Bodies[j].XVelocity += Bodies[j].XAcceleration * (distanceTick / 2);
-                    Bodies[j].YVelocity += Bodies[j].YAcceleration * (distanceTick / 2);
+                    Bodies[j].XVelocity += Bodies[j].XAcceleration * (TimeStep / 2);
+                    Bodies[j].YVelocity += Bodies[j].YAcceleration * (TimeStep / 2);
 
-                    Bodies[j].XCoordinate += Bodies[j].XVelocity * distanceTick;
-                    Bodies[j].YCoordinate += Bodies[j].YVelocity * distanceTick;
+                    Bodies[j].XCoordinate += Bodies[j].XVelocity * TimeStep;
+                    Bodies[j].YCoordinate += Bodies[j].YVelocity * TimeStep;
 
-                    Log.Insert(0, $"{Bodies[j]}: X: {Bodies[j].XCoordinate} Y: {Bodies[j].YCoordinate}");
                 }
 
                 GetAccelerations();
 
                 for (int j = 0; j < Bodies.Count; j++)
                 {
-                    Bodies[j].XVelocity += Bodies[j].XAcceleration * (distanceTick / 2);
-                    Bodies[j].YVelocity += Bodies[j].YAcceleration * (distanceTick / 2);
+                    Bodies[j].XVelocity += Bodies[j].XAcceleration * (TimeStep / 2);
+                    Bodies[j].YVelocity += Bodies[j].YAcceleration * (TimeStep / 2);
 
-                    Log.Insert(0,$"{Bodies[j]}: X: {Bodies[j].XCoordinate} Y: {Bodies[j].YCoordinate}");
                 }
 
-                Time = Time + distanceTick;
-                Latestlog = Log.FirstOrDefault();
-                Log.Insert(0,$"Time: {Time}");
+                Time = Time + TimeStep;
+                
                 
             }
         }
@@ -113,15 +122,21 @@ namespace GravitySimulation
         {
             for(int i = 0; i < Bodies.Count; i++)
             {
+                Bodies[i].XAcceleration = 0.0;
+                Bodies[i].YAcceleration = 0.0;
                 for (int j = 0; Bodies.Count > j; j++)
                 {
 
-                    double dx = Bodies[j].XCoordinate - Bodies[i].XCoordinate;
-                    double dy = Bodies[j].YCoordinate - Bodies[i].YCoordinate;
-                    double inv_r3 = Math.Pow((dx * dx + dy * dy + Softening * Softening),-1.5) ;
+                    if (i != j)
+                    {
+                        double dx = Bodies[j].XCoordinate - Bodies[i].XCoordinate;
+                        double dy = Bodies[j].YCoordinate - Bodies[i].YCoordinate;
+                        double inv_r3 = Math.Pow((dx * dx + dy * dy + Softening * Softening), -1.5);
 
-                    Bodies[i].XAcceleration += GravitationalConstant * (dx * inv_r3) * Bodies[j].Mass;
-                    Bodies[i].YAcceleration += GravitationalConstant * (dy * inv_r3) * Bodies[j].Mass;
+                        Bodies[i].XAcceleration += GravitationalConstant * (dx * inv_r3) * Bodies[j].Mass;
+                        Bodies[i].YAcceleration += GravitationalConstant * (dy * inv_r3) * Bodies[j].Mass;
+                    }
+     
 
 
                 }
@@ -132,5 +147,8 @@ namespace GravitySimulation
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public void AddBodies(Body body1) => Bodies.Add(body1);
+
     }
 }

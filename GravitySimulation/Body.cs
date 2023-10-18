@@ -31,7 +31,7 @@ namespace GravitySimulation
 
         public double presentableXCordinate 
         { 
-            get => (Math.Round(XCoordinate - (Size / 2))/ 10000 + 500);
+            get => (Math.Round(XCoordinate - (presentableSize / 2)));
             set
             {
                 OnPropertyChanged();
@@ -39,7 +39,7 @@ namespace GravitySimulation
          }
         public double presentableYCordinate
         {
-            get => Math.Round(YCoordinate - (Size / 2))/10000 + 500; 
+            get => Math.Round(YCoordinate - (presentableSize / 2)); 
             set
             {
                 OnPropertyChanged();
@@ -57,6 +57,15 @@ namespace GravitySimulation
                     _brush = value;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        public double presentableSize
+        {
+            get => Math.Round(Size / 100);
+            set
+            {
+                OnPropertyChanged();
             }
         }
 
@@ -101,6 +110,7 @@ namespace GravitySimulation
                 }
             }
         }
+        
         private double _size { get; set; }
         public double Size
         {
@@ -114,6 +124,7 @@ namespace GravitySimulation
                 }
             }
         }
+       
         private double _velocityY { get; set; }
         public double YVelocity
         {
@@ -127,6 +138,7 @@ namespace GravitySimulation
                 }
             }
         }
+        
         private double _velocityX { get; set; }
         public double XVelocity
         {
@@ -140,6 +152,7 @@ namespace GravitySimulation
                 }
             }
         }
+
         private double _xCoordinate { get; set; }
         public double XCoordinate
         {
@@ -170,7 +183,6 @@ namespace GravitySimulation
             }
         }
 
-
         private double _yAcceleration { get; set; }
         public double YAcceleration
         {
@@ -184,6 +196,7 @@ namespace GravitySimulation
                 }
             }
         }
+
         private double _xAcceleration { get; set; }
         public double XAcceleration
         {

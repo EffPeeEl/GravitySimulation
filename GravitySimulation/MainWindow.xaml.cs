@@ -28,8 +28,7 @@ namespace GravitySimulation
         {
             InitializeComponent();
             DataContext = this;
-            BodyXAxis = 5;
-            BodyYAxis = 5;
+
 
   
             
@@ -43,32 +42,34 @@ namespace GravitySimulation
         }
 
 
-        private decimal _bodyXAxis;
-        public decimal BodyXAxis
+
+        private double _canvasWidth;
+        public double CanvasWidth
         {
-            get { return _bodyXAxis; }
+            get { return _canvasWidth; ; }
             set
             {
-                if (_bodyXAxis != value)
+                if (_canvasWidth != value)
                 {
-                    _bodyXAxis = value;
+                    _canvasWidth = value; 
                     OnPropertyChanged();
                 }
             }
         }
-        private decimal _bodyYAxis;
-        public decimal BodyYAxis
+        private double _canvasHeight;
+        public double CanvasHeight
         {
-            get { return _bodyYAxis; }
+            get { return _canvasHeight; ; }
             set
             {
-                if (_bodyYAxis != value)
+                if (_canvasHeight != value)
                 {
-                    _bodyYAxis = value;
+                    _canvasHeight = value;
                     OnPropertyChanged();
                 }
             }
         }
+
         private ObservableCollection<Body> _gravBodies;
         public ObservableCollection<Body> GravBodies
         {
@@ -95,53 +96,28 @@ namespace GravitySimulation
                     OnPropertyChanged();
                 }
             }
-        }
+        } 
 
 
 
 
         public void MoveSimulation()
         {
-            
-            var body1 = new Body("Blue")
-            {
-                Name = "Earth",
-                Mass = 10,
-                Size = 15,
-                XVelocity = 0,
-                YVelocity = -0.5,
-                XCoordinate = 400,
-                YCoordinate = 400,
-            };
-            var body2 = new Body("Red")
-            {
-                Name = "Mars",
-                Mass = 0.0000001,
-                Size = 30,
-                XVelocity = 0,
-                YVelocity = 0,
-                XCoordinate = 300,
-                YCoordinate = 400,
-            };
-            
-    
 
-            var bodies = new ObservableCollection<Body> { body1, body2 };
-
-            for (int i = 0; i < 10; i++)
-            {
-                Random r= new Random();
-                bodies.Add(new Body()
-                {
-                    XCoordinate = r.NextDouble() * 1000,
-                    YCoordinate = r.NextDouble() * 1000,
-                    YVelocity = r.NextDouble() * 25,
-                    XVelocity = r.NextDouble() * 25,
-                    Mass = r.NextDouble() * 1000,
-                    Size = r.NextDouble() * 10
-                });
-            }
-            simulation = new Simulation(bodies);
+            // random bodies
+            //for (int i = 0; i < 2; i++)
+            //{
+            //    Random r= new Random();
+            //    bodies.Add(new Body()
+            //    {
+            //        XCoordinate = r.NextDouble() * 1000,
+            //        YCoordinate = r.NextDouble() * 1000,
+            //        YVelocity = r.NextDouble() ,
+            //        XVelocity = r.NextDouble() ,
+            //        Mass = r.NextDouble() * 1000,
+            //        Size = r.NextDouble() * 100
+            //    });
+            //
 
             new Thread(() =>
             {
@@ -196,7 +172,52 @@ namespace GravitySimulation
             sender.Visibility = Visibility.Visible;
         }
 
+        private void GravityCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            CanvasHeight = GravityCanvas.ActualHeight;
+            CanvasWidth = GravityCanvas.ActualWidth;
+        }
 
+        private void SpawnDefBodies_Click(object sender, RoutedEventArgs e)
+        {
+            simulation = new Simulation();
+            var body1 = new Body("Blue")
+            {
+                Name = "Earth",
+                Mass = 5.972e24 / 1.0e19,
+                Size = 6371,
+                XVelocity = 0,
+                YVelocity = 0,
+                XCoordinate = 400,
+                YCoordinate = 400,
+            };
+            var body2 = new Body("Red")
+            {
+                Name = "Mars",
+                Mass = 6.39e23/ 1.0e19,
+                Size = 3389,
+                XVelocity = 0,
+                YVelocity = -6.67e-4,
+                XCoordinate = 300,
+                YCoordinate = 400,
+            };
+
+            var body3 = new Body("Brown")
+            {
+                Name = "Mercury",
+                Mass = 6.39e22 / 1.0e19,
+                Size = 1050,
+                XVelocity = 0,
+                YVelocity = 0,
+                XCoordinate = 600,
+                YCoordinate = 500,
+            };
+
+
+            simulation.AddBodies(body1);
+            simulation.AddBodies(body2);
+            simulation.AddBodies(body3);
+        }
     }
 
 }

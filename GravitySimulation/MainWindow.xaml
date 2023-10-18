@@ -66,7 +66,7 @@
             <Button x:Name="GravityMenuButton" Click="GravityMenuButton_Click">
                 <DockPanel>
                     <Image Source="pack://application:,,,/Resources/combo-chart.png" Stretch="None" Margin="10,0,10,0"/>
-                    <TextBlock>Stocks</TextBlock>
+                    <TextBlock>Body Sim</TextBlock>
                 </DockPanel>
             </Button>
 
@@ -84,12 +84,7 @@
                 </DockPanel>
             </Button>
 
-            <Button x:Name="InternetButton" Click="InternetButton_Click">
-                <DockPanel>
-                    <Image Source="pack://application:,,,/Resources/internet_20.png" Stretch="None" Margin="10,0,10,0"/>
-                    <TextBlock>Internet</TextBlock>
-                </DockPanel>
-            </Button>
+ 
 
             <Button x:Name="AnalysisButton" Click="AnalysisButton_Click">
                 <DockPanel>
@@ -116,7 +111,7 @@
 
                 </Grid.RowDefinitions>
                 
-                <ItemsControl ItemsSource="{Binding simulation.Bodies}">
+                <ItemsControl Grid.Column="0" ItemsSource="{Binding simulation.Bodies}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <Canvas />
@@ -132,7 +127,7 @@
 
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Ellipse Fill="{Binding brush}" Width="{Binding Size}" Height ="{Binding Size}" />
+                            <Ellipse Fill="{Binding brush}" Width="{Binding presentableSize}" Height ="{Binding presentableSize}" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -140,25 +135,21 @@
 
 
 
-                <Canvas x:Name="GravityCanvas" Grid.Row="0" Grid.Column="0">
-                    <Rectangle Canvas.Left="{Binding Path=BodyXAxis}"
-                               Canvas.Top="{Binding Path=BodyYAxis}"
-                               
-                               Width="10" Height="10" Fill="Black">
-                        
-                    </Rectangle>
+                <Canvas x:Name="GravityCanvas" Grid.Row="0" Grid.Column="0" SizeChanged="GravityCanvas_SizeChanged" >
+
                 </Canvas>
 
                 <StackPanel Grid.Column="1">
-                    <Button  x:Name="MoveBodyButton" Height="100" Width="100" Click="MoveBodyButton_Click" >
-                        Start Simulation
-                    </Button>
+                    <Button  x:Name="SpawnDefBodies" Height="25" Width="100" Click="SpawnDefBodies_Click"
+                             Content="Spawn Bodies"
+                             />
+
+                    <Button  x:Name="MoveBodyButton" Height="25" Width="100" Click="MoveBodyButton_Click"
+                             Content="Start Simulation"
+                             />
                     <TextBlock
                     
-                    Grid.Row="0"
-                    Grid.RowSpan="4"
-                    Grid.Column="7"
-                    Grid.ColumnSpan="2"
+ 
                     x:Name="LogListBox"
                     FontFamily="Cascadia Code"
    
@@ -167,7 +158,14 @@
                     
                     ScrollViewer.VerticalScrollBarVisibility="Visible"
                     Text="{Binding Path=simulation.Latestlog}"
-                />
+                    />
+                    
+
+                    <TextBlock Text="{Binding Path=CanvasHeight}"/>
+                    <TextBlock Text="{Binding Path=CanvasWidth}"/>
+
+
+
                 </StackPanel>
   
             
