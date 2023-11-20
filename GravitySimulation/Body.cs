@@ -114,7 +114,7 @@ namespace GravitySimulation
         private double _size { get; set; }
         public double Size
         {
-            get { return _size; }
+            get { return _size / 2 ; }
             set
             {
                 if (_size != value)

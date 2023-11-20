@@ -27,14 +27,51 @@ namespace GravitySimulation
             }
         }
 
-        public double GravitationalConstant { get; set; }
+        public double G  { get; set; } // Gravitational Constant
  
         public double Softening { get; set; }
 
-        public double Time;
+        private double _time { get; set; }
+        public double Time
+        {
+            get { return _time; }
+            set
+            {
+                if (_time != value)
+                {
+                    _time = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
-        public double TimeStep;
+        private double _timeStep { get; set; }
+        public double TimeStep
+        {
+            get { return _timeStep; }
+            set
+            {
+                if (_timeStep != value)
+                {
+                    _timeStep = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
+        private int _timeDelay { get; set; }
+        public int TimeDelay
+        {
+            get { return _timeDelay; }
+            set
+            {
+                if (_timeDelay != value)
+                {
+                    _timeDelay = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public List<string> _log { get; set; }
         public List<string> Log
@@ -67,16 +104,16 @@ namespace GravitySimulation
         public Simulation(ObservableCollection<Body> bodies)
         {
             this.Bodies = bodies;
-            GravitationalConstant = 6.67e-11;
+            G = 6.67e-11;
             Softening = 10;
             TimeStep = 10.0;
             Time = 0;
             Log = new List<string>();
-       }
+        }
         public Simulation()
         {
             this.Bodies = new ObservableCollection<Body>();
-            GravitationalConstant = 6.67e-11;
+            G = 6.67e-11;
             Softening = 10;
             TimeStep = 10.0;
             Time = 0;
@@ -109,9 +146,9 @@ namespace GravitySimulation
 
                 }
 
-                Time = Time + TimeStep;
-                
-                
+                Time += TimeStep;
+                Thread.Sleep(TimeDelay);
+
             }
         }
    
@@ -133,8 +170,8 @@ namespace GravitySimulation
                         double dy = Bodies[j].YCoordinate - Bodies[i].YCoordinate;
                         double inv_r3 = Math.Pow((dx * dx + dy * dy + Softening * Softening), -1.5);
 
-                        Bodies[i].XAcceleration += GravitationalConstant * (dx * inv_r3) * Bodies[j].Mass;
-                        Bodies[i].YAcceleration += GravitationalConstant * (dy * inv_r3) * Bodies[j].Mass;
+                        Bodies[i].XAcceleration += G * (dx * inv_r3) * Bodies[j].Mass;
+                        Bodies[i].YAcceleration += G * (dy * inv_r3) * Bodies[j].Mass;
                     }
      
 

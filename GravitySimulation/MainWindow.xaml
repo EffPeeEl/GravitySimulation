@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:GravitySimulation"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid x:Name="RootGrid">
+    <Grid x:Name="RootGrid" Background="Beige">
         <Grid.Resources>
             <Style TargetType="{x:Type TextBox}">
                 <Setter Property="Margin" Value="0,0,0,0"/>
@@ -159,11 +159,38 @@
                     ScrollViewer.VerticalScrollBarVisibility="Visible"
                     Text="{Binding Path=simulation.Latestlog}"
                     />
-                    
 
-                    <TextBlock Text="{Binding Path=CanvasHeight}"/>
-                    <TextBlock Text="{Binding Path=CanvasWidth}"/>
 
+                    <TextBlock Text="{Binding Path=CanvasHeight, StringFormat=N0}"/>
+                    <TextBlock Text="{Binding Path=CanvasWidth, StringFormat=N0}" />
+
+                    <Slider Value="{Binding Path=simulation.TimeStep}"
+                            Minimum="0"
+                            Maximum="10000"
+                            IsSnapToTickEnabled="True"
+                            TickFrequency="100"
+                            >
+                        
+                    </Slider>
+                    <DockPanel>
+                        <TextBlock Text="Time Step: " />
+                        <TextBlock Text="{Binding Path=simulation.TimeStep}"/>
+                    </DockPanel>
+                    <Slider Value="{Binding Path=simulation.TimeDelay}"
+                            Minimum="0"
+                            Maximum="100"
+                            IsSnapToTickEnabled="True"
+                            TickFrequency="1"
+                            >
+                    </Slider>
+                    <DockPanel>
+                        <TextBlock Text="Time Delay: " />
+                        <TextBlock Text="{Binding Path=simulation.TimeDelay}"/>
+                    </DockPanel>
+                    <DockPanel>
+                        <TextBlock Text="Time: " />
+                        <TextBlock Text="{Binding Path=simulation.Time}"/>
+                    </DockPanel>
 
 
                 </StackPanel>

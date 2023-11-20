@@ -165,7 +165,7 @@ namespace GravitySimulation
 
         private void OpenPage(Grid sender)
         {
-            foreach (Grid g in ViewRootGrid.Children)
+            foreach (Grid g in GridViews.Children)
             {
                 g.Visibility = Visibility.Collapsed;
             }
@@ -213,10 +213,22 @@ namespace GravitySimulation
                 YCoordinate = 500,
             };
 
+            var body4 = new Body("Black")
+            {
+                Name = "Hola",
+                Mass = 2.39e23 / 1.0e19,
+                Size = 2050,
+                XVelocity = -6.67e-5,
+                YVelocity = -3.67e-4,
+                XCoordinate = 245,
+                YCoordinate = 550,
+            };
+
 
             simulation.AddBodies(body1);
             simulation.AddBodies(body2);
             simulation.AddBodies(body3);
+            simulation.AddBodies(body4);
         }
     }
 
