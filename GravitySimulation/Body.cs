@@ -196,7 +196,6 @@ namespace GravitySimulation
                 }
             }
         }
-
         private double _xAcceleration { get; set; }
         public double XAcceleration
         {
