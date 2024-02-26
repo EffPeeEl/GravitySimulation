@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
-using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace GravitySimulation
@@ -37,14 +31,26 @@ namespace GravitySimulation
                 OnPropertyChanged();
             }
          }
+
         public double presentableYCordinate
         {
-            get => Math.Round(YCoordinate - (presentableSize / 2)); 
+            get => Math.Round(YCoordinate - (presentableSize / 2));
             set
             {
                 OnPropertyChanged();
             }
         }
+
+        public double presentableZCordinate
+        {
+            get => Math.Round(ZCoordinate - (presentableSize / 2)); 
+            set
+            {
+                OnPropertyChanged();
+            }
+        }
+
+
 
         private Brush _brush { get; set; }
         public Brush brush
@@ -60,14 +66,30 @@ namespace GravitySimulation
             }
         }
 
+        //public double presentableSize
+        //{
+        //    get => Math.Round(Size / 100);
+        //    set
+        //    {
+        //        OnPropertyChanged();
+        //    }
+        //}
         public double presentableSize
         {
-            get => Math.Round(Size / 100);
+            get
+            {
+                // Assuming the farther away (higher ZCoordinate), the smaller the size.
+                // Adjust 'depthFactor' according to how sensitive you want the size to be relative to ZCoordinate.
+                double depthFactor = 1 + (ZCoordinate / 1000); // Example scaling factor - adjust as needed.
+                return Math.Round(Size / 100 / depthFactor); // Divide by 'depthFactor' to scale size by distance.
+            }
             set
             {
                 OnPropertyChanged();
             }
         }
+
+
 
         private string _name { get; set; }
         public string Name
@@ -111,48 +133,70 @@ namespace GravitySimulation
             }
         }
         
+
+        // Radius in KM
         private double _size { get; set; }
         public double Size
         {
-            get { return _size / 2 ; }
+            get { return _size ; }
             set
             {
                 if (_size != value)
                 {
                     _size = value;
+
                     OnPropertyChanged();
+                    OnPropertyChanged("presentableSize");
                 }
             }
         }
-       
-        private double _velocityY { get; set; }
+
+
+        #region Velocities
+        private double _yVelocity { get; set; }
         public double YVelocity
         {
-            get { return _velocityY; }
+            get { return _yVelocity; }
             set
             {
-                if (_velocityY != value)
+                if (_yVelocity != value)
                 {
-                    _velocityY = value;
+                    _yVelocity = value;
                     OnPropertyChanged();
                 }
             }
         }
         
-        private double _velocityX { get; set; }
+        private double _xVelocity { get; set; }
         public double XVelocity
         {
-            get { return _velocityX; }
+            get { return _xVelocity; }
             set
             {
-                if (_velocityX != value)
+                if (_xVelocity != value)
                 {
-                    _velocityX = value;
+                    _xVelocity = value;
                     OnPropertyChanged();
                 }
             }
         }
 
+        private double _zVelocity { get; set; }
+        public double ZVelocity
+        {
+            get { return _zVelocity; }
+            set
+            {
+                if (_zVelocity != value)
+                {
+                    _zVelocity = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        #endregion
+
+        #region Coordinates
         private double _xCoordinate { get; set; }
         public double XCoordinate
         {
@@ -183,6 +227,24 @@ namespace GravitySimulation
             }
         }
 
+        private double _zCoordinate { get; set; }
+        public double ZCoordinate
+        {
+            get { return _zCoordinate; }
+            set
+            {
+                if (_zCoordinate != value)
+                {
+                    _zCoordinate = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged("presentableZCordinate");
+                    OnPropertyChanged("presentableSize");
+                }
+            }
+        }
+        #endregion
+
+        #region Acceleration
         private double _yAcceleration { get; set; }
         public double YAcceleration
         {
@@ -196,6 +258,7 @@ namespace GravitySimulation
                 }
             }
         }
+       
         private double _xAcceleration { get; set; }
         public double XAcceleration
         {
@@ -211,6 +274,22 @@ namespace GravitySimulation
         }
 
 
+        private double _zAcceleration { get; set; }
+        public double ZAcceleration
+        {
+            get { return _zAcceleration; }
+            set
+            {
+                if (_zAcceleration != value)
+                {
+                    _zAcceleration = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        #endregion
+
+
 
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -223,6 +302,7 @@ namespace GravitySimulation
         {
             return Name;
         }
+
 
     }
 }

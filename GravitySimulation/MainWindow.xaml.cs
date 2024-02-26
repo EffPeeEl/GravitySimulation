@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -24,15 +25,17 @@ namespace GravitySimulation
     /// </summary>
     public partial class MainWindow : INotifyPropertyChanged
     {
-        public MainWindow()
+       public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
+            UIBodyToAdd = new Body("Green")
+            {
+                Size = 5000
+            };
 
-
-  
-            
         }
+
 
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -70,6 +73,60 @@ namespace GravitySimulation
             }
         }
 
+        private string _inputBodyName;
+        public string InputBodyName
+        {
+            get { return _inputBodyName; ; }
+            set
+            {
+                if (_inputBodyName != value)
+                {
+                    _inputBodyName = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private double _inputBodyMass;
+        public double InputBodyMass
+        {
+            get { return _inputBodyMass; ; }
+            set
+            {
+                if (_inputBodyMass != value)
+                {
+                    _inputBodyMass = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        
+
+        public double InputBodySize
+        {
+            get { return UIBodyToAdd.Size; ; }
+            set
+            {
+                UIBodyToAdd.Size = value;
+                OnPropertyChanged();
+                OnPropertyChanged("UIBodyCordXY");
+
+            }
+        }
+
+        private double _uiBodyCordXY;
+        public double UIBodyCordXY
+        {
+            get { return 50 - (UIBodyToAdd.presentableSize / 2); ; }
+            set
+            {
+                OnPropertyChanged();
+
+            }
+        }
+
+
         private ObservableCollection<Body> _gravBodies;
         public ObservableCollection<Body> GravBodies
         {
@@ -96,9 +153,21 @@ namespace GravitySimulation
                     OnPropertyChanged();
                 }
             }
-        } 
+        }
 
-
+        private Body _uiBodyToAdd { get; set; }
+        public Body UIBodyToAdd
+        {
+            get { return _uiBodyToAdd; ; }
+            set
+            {
+                if (_uiBodyToAdd != value)
+                {
+                    _uiBodyToAdd = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
 
         public void MoveSimulation()
@@ -118,7 +187,7 @@ namespace GravitySimulation
             //        Size = r.NextDouble() * 100
             //    });
             //
-
+            
             new Thread(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
@@ -190,6 +259,8 @@ namespace GravitySimulation
                 YVelocity = 0,
                 XCoordinate = 400,
                 YCoordinate = 400,
+                ZCoordinate = 0,
+                isStatic = true,
             };
             var body2 = new Body("Red")
             {
@@ -202,34 +273,36 @@ namespace GravitySimulation
                 YCoordinate = 400,
             };
 
-            var body3 = new Body("Brown")
-            {
-                Name = "Mercury",
-                Mass = 6.39e22 / 1.0e19,
-                Size = 1050,
-                XVelocity = 0,
-                YVelocity = 0,
-                XCoordinate = 600,
-                YCoordinate = 500,
-            };
 
             var body4 = new Body("Black")
             {
-                Name = "Hola",
-                Mass = 2.39e23 / 1.0e19,
-                Size = 2050,
-                XVelocity = -6.67e-5,
+                Name = "Moon",
+                Mass = 7.34767e22 / 1.0e19,
+                Size = 1737 ,
+                XVelocity = 0,
                 YVelocity = -3.67e-4,
                 XCoordinate = 245,
-                YCoordinate = 550,
+                YCoordinate = 0,
             };
 
 
             simulation.AddBodies(body1);
             simulation.AddBodies(body2);
-            simulation.AddBodies(body3);
             simulation.AddBodies(body4);
         }
+
+        private void AddBodyButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+
+
+        private void PauseSimButton_Click(object sender, RoutedEventArgs e)
+        {
+            simulation.Pause();
+        }
     }
+
 
 }

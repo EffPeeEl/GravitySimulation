@@ -39,6 +39,47 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+
+
+            
+            <Style TargetType="{x:Type DataGrid}">
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="BorderBrush" Value="Black"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="RowBackground" Value="White"/>
+                <Setter Property="AlternatingRowBackground" Value="#F7F7F7"/>
+                <Setter Property="HorizontalGridLinesBrush" Value="#E0E0E0"/>
+                <Setter Property="VerticalGridLinesBrush" Value="#E0E0E0"/>
+            </Style>
+
+            
+            <Style TargetType="{x:Type DataGridCell}">
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Padding" Value="8"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#515151"/>
+                        <Setter Property="Foreground" Value="White"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            
+            <Style TargetType="{x:Type DataGridColumnHeader}">
+                <Setter Property="Background" Value="Gray"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="Height" Value="32"/>
+                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                <Setter Property="BorderBrush" Value="Black"/>
+                <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#515151"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+
         </Grid.Resources>
 
 
@@ -46,7 +87,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="6*"/>
-            <ColumnDefinition Width="15"/>
+
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
@@ -131,6 +172,9 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+                
+                
+       
 
 
 
@@ -140,14 +184,20 @@
                 </Canvas>
 
                 <StackPanel Grid.Column="1">
-                    <Button  x:Name="SpawnDefBodies" Height="25" Width="100" Click="SpawnDefBodies_Click"
-                             Content="Spawn Bodies"
+                    <Button  x:Name="SpawnDefBodies" Height="25"  Click="SpawnDefBodies_Click"
+                             Content="Spawn Default Bodies"
                              />
 
-                    <Button  x:Name="MoveBodyButton" Height="25" Width="100" Click="MoveBodyButton_Click"
+                    <Button  x:Name="MoveBodyButton" Height="25" Click="MoveBodyButton_Click"
                              Content="Start Simulation"
                              />
+
+
+                    <Button  x:Name="PauseSimButton" Height="25" Click="PauseSimButton_Click"
+                             Content="Pause Simulation"
+                             />
                     <TextBlock
+
                     
  
                     x:Name="LogListBox"
@@ -185,12 +235,71 @@
                     </Slider>
                     <DockPanel>
                         <TextBlock Text="Time Delay: " />
-                        <TextBlock Text="{Binding Path=simulation.TimeDelay}"/>
+                        <TextBlock Text="{Binding Path=simulation.TimeDelay , StringFormat=N0}"/>
                     </DockPanel>
                     <DockPanel>
                         <TextBlock Text="Time: " />
-                        <TextBlock Text="{Binding Path=simulation.Time}"/>
+                        <TextBlock Text="{Binding Path=simulation.Time , StringFormat=N0}"/>
                     </DockPanel>
+                 
+                    <DataGrid ItemsSource="{Binding simulation.Bodies}" 
+                       AutoGenerateColumns="False"
+                       HorizontalAlignment="Stretch"
+                       VerticalAlignment="Stretch"
+                       ColumnWidth="*"
+                       
+                       >
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
+                            <DataGridTextColumn Header="X Location" Binding="{Binding XCoordinate, StringFormat=N2}"/>
+                            <DataGridTextColumn Header="Y Location" Binding="{Binding YCoordinate, StringFormat=N2}"/>
+
+                            <DataGridTextColumn Header="Z Location" Binding="{Binding ZCoordinate, StringFormat=N2}"/>
+                            <DataGridTextColumn Header="Static Body?" Binding="{Binding isStatic}"/>
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+                    <Canvas Height="100" Width="100">
+                        <Ellipse Fill="{Binding Path=UIBodyToAdd.brush}"
+ 
+                Width="{Binding Path=UIBodyToAdd.presentableSize}" 
+                Height="{Binding Path=UIBodyToAdd.presentableSize}"
+                
+                Canvas.Left="{Binding Path= UIBodyCordXY}"
+                Canvas.Top="{Binding Path= UIBodyCordXY}"
+                
+                                    />
+                    
+                    </Canvas>
+
+                    <Button  x:Name="AddBodyButton" Height="25" Click="AddBodyButton_Click"
+                             Content="Add Body"
+                             />
+
+                    <Slider Value="{Binding Path=InputBodySize}"
+                            Minimum="0"
+                            Maximum="10000"
+                            IsSnapToTickEnabled="True"
+                            TickFrequency="50"
+                            >
+
+                    </Slider>
+                    
+                    <DockPanel>
+                        <StackPanel>
+                            <TextBlock Height="20" Text="Size: " />
+                            <TextBlock Height="20" Text="Mass: " />
+                            <TextBlock Height="20" Text="Name: " />
+                        </StackPanel>
+                        <StackPanel>
+
+                            <TextBox Height="20" Text="{Binding Path=InputBodySize, StringFormat=N2}"/>
+                            <TextBox Height="20" Text="{Binding Path=InputBodyMass, StringFormat=N2}"/>
+                            <TextBox Height="20" Text="{Binding Path=InputBodyName, StringFormat=N2}"/>
+                        </StackPanel>
+                        
+                    </DockPanel>
+
 
 
                 </StackPanel>

@@ -73,7 +73,7 @@ namespace GravitySimulation
             }
         }
 
-        public List<string> _log { get; set; }
+        private List<string> _log { get; set; }
         public List<string> Log
         {
             get { return _log; }
@@ -87,7 +87,7 @@ namespace GravitySimulation
             }
         }
 
-        public string _latestlog { get; set; }
+        private string _latestlog { get; set; }
         public string Latestlog
         {
             get { return _latestlog; }
@@ -121,64 +121,107 @@ namespace GravitySimulation
         }
 
 
+        private bool _isRunning { get; set; }
+        public bool IsRunning
+        {
+            get { return _isRunning; }
+            set
+            {
+                if (_isRunning != value)
+                {
+                    _isRunning = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         public void RunSimulation()
         {
-            for(int i = 0; i < 1000000; i++) 
+            IsRunning = true;
+            while(IsRunning)
             {
-
-
-                for(int j = 0; j < Bodies.Count; j++)
+                for (int j = 0; j < Bodies.Count; j++)
                 {
-                    Bodies[j].XVelocity += Bodies[j].XAcceleration * (TimeStep / 2);
-                    Bodies[j].YVelocity += Bodies[j].YAcceleration * (TimeStep / 2);
 
-                    Bodies[j].XCoordinate += Bodies[j].XVelocity * TimeStep;
-                    Bodies[j].YCoordinate += Bodies[j].YVelocity * TimeStep;
+                    if (!Bodies[j].isStatic)
+                    {
+                        Bodies[j].XVelocity += Bodies[j].XAcceleration * (TimeStep / 2);
+                        Bodies[j].YVelocity += Bodies[j].YAcceleration * (TimeStep / 2);
+                        Bodies[j].ZVelocity += Bodies[j].ZAcceleration * (TimeStep / 2);
+
+                        Bodies[j].XCoordinate += Bodies[j].XVelocity * TimeStep;
+                        Bodies[j].YCoordinate += Bodies[j].YVelocity * TimeStep;
+                        Bodies[j].ZCoordinate += Bodies[j].ZVelocity * TimeStep;
+
+                    }
 
                 }
-
                 GetAccelerations();
 
                 for (int j = 0; j < Bodies.Count; j++)
                 {
-                    Bodies[j].XVelocity += Bodies[j].XAcceleration * (TimeStep / 2);
-                    Bodies[j].YVelocity += Bodies[j].YAcceleration * (TimeStep / 2);
+                    if (!Bodies[j].isStatic)
+                    {
+                        Bodies[j].XVelocity += Bodies[j].XAcceleration * (TimeStep / 2);
+                        Bodies[j].YVelocity += Bodies[j].YAcceleration * (TimeStep / 2);
+                        Bodies[j].ZVelocity += Bodies[j].ZAcceleration * (TimeStep / 2);
+                    }
 
                 }
-
                 Time += TimeStep;
                 Thread.Sleep(TimeDelay);
 
             }
+
+
         }
    
-
-        
 
         public void GetAccelerations()
         {
             for(int i = 0; i < Bodies.Count; i++)
             {
-                Bodies[i].XAcceleration = 0.0;
-                Bodies[i].YAcceleration = 0.0;
-                for (int j = 0; Bodies.Count > j; j++)
+
+                if (!Bodies[i].isStatic)
                 {
-
-                    if (i != j)
+                    Bodies[i].XAcceleration = 0.0;
+                    Bodies[i].YAcceleration = 0.0;
+                    Bodies[i].ZAcceleration = 0.0;
+                    for (int j = 0; Bodies.Count > j; j++)
                     {
-                        double dx = Bodies[j].XCoordinate - Bodies[i].XCoordinate;
-                        double dy = Bodies[j].YCoordinate - Bodies[i].YCoordinate;
-                        double inv_r3 = Math.Pow((dx * dx + dy * dy + Softening * Softening), -1.5);
 
-                        Bodies[i].XAcceleration += G * (dx * inv_r3) * Bodies[j].Mass;
-                        Bodies[i].YAcceleration += G * (dy * inv_r3) * Bodies[j].Mass;
+                        if (i != j)
+                        {
+                            //double dx = Bodies[j].XCoordinate - Bodies[i].XCoordinate;
+                            //double dy = Bodies[j].ZCoordinate - Bodies[i].ZCoordinate;
+                            //double inv_r3 = Math.Pow((dx * dx + dy * dy + Softening * Softening), -1.5);
+
+                            //Bodies[i].XAcceleration += G * (dx * inv_r3) * Bodies[j].Mass;
+                            //Bodies[i].YAcceleration += G * (dy * inv_r3) * Bodies[j].Mass;
+
+                            double dx = Bodies[j].XCoordinate - Bodies[i].XCoordinate;
+                            double dy = Bodies[j].YCoordinate - Bodies[i].YCoordinate;
+                            double dz = Bodies[j].ZCoordinate - Bodies[i].ZCoordinate;
+                            double distanceSquared = dx * dx + dy * dy + dz * dz + Softening * Softening;
+                            double inv_r3 = Math.Pow(distanceSquared, -1.5);
+
+                            Bodies[i].XAcceleration += G * (dx * inv_r3) * Bodies[j].Mass;
+                            Bodies[i].YAcceleration += G * (dy * inv_r3) * Bodies[j].Mass;
+                            Bodies[i].ZAcceleration += G * (dz * inv_r3) * Bodies[j].Mass;
+
+
+                        }
+
                     }
-     
-
-
                 }
+
+
             }
         }
+
+
+
+
+
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -186,6 +229,13 @@ namespace GravitySimulation
         }
 
         public void AddBodies(Body body1) => Bodies.Add(body1);
+
+
+
+        public void Pause()
+        {
+            IsRunning = false;
+        }
 
     }
 }
