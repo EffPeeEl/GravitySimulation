@@ -219,7 +219,13 @@ namespace GravitySimulation
         }
 
 
+        //public bool CollisionChecker(Body body1, Body body2)
+        //{
 
+        //    if(body1.XCoordinate + body1.Size )
+        //    return false;
+
+        //}
 
 
         public event PropertyChangedEventHandler? PropertyChanged;

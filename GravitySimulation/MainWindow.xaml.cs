@@ -277,12 +277,12 @@ namespace GravitySimulation
             var body4 = new Body("Black")
             {
                 Name = "Moon",
-                Mass = 7.34767e22 / 1.0e19,
+                Mass = 5.972e24 / 1.0e19,
                 Size = 1737 ,
                 XVelocity = 0,
                 YVelocity = -3.67e-4,
                 XCoordinate = 245,
-                YCoordinate = 0,
+                YCoordinate = 300,
             };
 
 
